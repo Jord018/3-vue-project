@@ -35,11 +35,12 @@ onMounted(() => {
 
 <template>
   <h1>Events For Good</h1>
-  <div class="events">
+  <div class="pagination">
     <EventCard v-for="event in events" :key="event.id" :event="event" />
     <category_organize v-for="event in events" :key="event.id" :event="event" />
   </div>
   <RouterLink
+  id="page-prev"
   :to="{ name: 'event-list-view', query: { page: page - 1 } }"
   rel="prev"
   v-if="page != 1"
@@ -48,6 +49,7 @@ onMounted(() => {
 </RouterLink>
 
 <RouterLink
+  id="page-next"
   :to="{ name: 'event-list-view', query: { page: page + 1 } }"
   rel="next"
   v-if="hasNextPage"
@@ -60,5 +62,23 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.pagination {
+    display: flex;
+    width: 290px;
+}
+
+.pagination a {
+    flex: 1;
+    text-decoration: none;
+    color: #2c3e50;
+}
+
+#page-prev {
+    text-align: left;
+}
+
+#page-next {
+    text-align: right;
 }
 </style>
