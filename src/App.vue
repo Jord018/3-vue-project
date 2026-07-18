@@ -8,9 +8,9 @@
     <header>
       <div class="wrapper">
         <nav>
-          <Router-Link to="/">Event</Router-Link>
-          <Router-Link to="/about">About</Router-Link>
-          <Router-Link to="/student">Student</Router-Link>
+          <Router-Link :to="{name: 'event-list-view'}">Event</Router-Link>
+          <Router-Link :to="{name: 'about'}">About</Router-Link>
+          <Router-Link :to="{name: 'student'}">Student</Router-Link>
         </nav>
       </div>
     </header>
