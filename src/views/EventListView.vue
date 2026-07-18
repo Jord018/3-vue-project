@@ -2,7 +2,7 @@
 import EventCard from '@/components/EventCard.vue'
 import category_organize from './../components/category_organize.vue'
 import type { Event } from '@/types'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watchEffect } from 'vue'
 import EventService from '@/services/EventService'
 
 
@@ -15,15 +15,16 @@ const props = defineProps({
 })
 const page = computed (() => props.page)
 onMounted(() => {
-    EventService.getEvents(1, page.value)
+  watchEffect(() => {
+  EventService.getEvents(1, page.value)
     .then((response) => {
       events.value = response.data
     })
     .catch((error) => {
       console.error('There was an error!', error)
     })
+  })
 })
-
 </script>
 
 <template>
@@ -32,6 +33,20 @@ onMounted(() => {
     <EventCard v-for="event in events" :key="event.id" :event="event" />
     <category_organize v-for="event in events" :key="event.id" :event="event" />
   </div>
+  <RouterLink
+  :to="{ name: 'event-list-view', query: { page: page - 1 } }"
+  rel="prev"
+  v-if="page != 1"
+>
+  Prev Page
+</RouterLink>
+
+<RouterLink 
+  :to="{ name: 'event-list-view', query: { page: page + 1 } }" 
+  rel="next"
+>
+  Next Page
+</RouterLink>
 </template>
 <style scoped>
 .events {
