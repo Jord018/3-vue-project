@@ -13,4 +13,7 @@ export default {
   getEvents() {
     return apiClient.get('/events')
   },
+  getStudents() {
+    return apiClient.get('/students')
+  }
 }
