@@ -4,12 +4,13 @@ import category_organize from './../components/category_organize.vue'
 import type { Event } from '@/types'
 import { ref, onMounted, computed, watchEffect } from 'vue'
 import EventService from '@/services/EventService'
-
-
+import { useRoute } from 'vue-router'
+const route = useRoute()
+const pageSize = computed(() => parseInt(route.query.pageSize as string) || 2)
 const events = ref<Event[] | null>(null)
 const totalEvents = ref(0)
 const hasNextPage = computed(() => {
-  const totalPages = Math.ceil(totalEvents.value / 2)
+  const totalPages = Math.ceil(totalEvents.value / pageSize.value)
   return page.value < totalPages
 })
 const props = defineProps({
@@ -21,7 +22,7 @@ const props = defineProps({
 const page = computed (() => props.page)
 onMounted(() => {
   watchEffect(() => {
-  EventService.getEvents(1, page.value)
+  EventService.getEvents(pageSize.value, page.value)
     .then((response) => {
       events.value = response.data
       totalEvents.value = response.headers['x-total-count']
@@ -35,13 +36,18 @@ onMounted(() => {
 
 <template>
   <h1>Events For Good</h1>
+  <div class="page-size-selector">
+    Items per page:
+    <RouterLink :to="{ name: 'event-list-view', query: { page: 1, pageSize: 1 }}">1</RouterLink> |
+    <RouterLink :to="{ name: 'event-list-view', query: { page: 1, pageSize: 2 }}">2</RouterLink>
+  </div>
   <div class="pagination">
     <EventCard v-for="event in events" :key="event.id" :event="event" />
     <category_organize v-for="event in events" :key="event.id" :event="event" />
   </div>
   <RouterLink
   id="page-prev"
-  :to="{ name: 'event-list-view', query: { page: page - 1 } }"
+  :to="{ name: 'event-list-view', query: { page: page - 1, pageSize: pageSize } }"
   rel="prev"
   v-if="page != 1"
 >
@@ -50,11 +56,11 @@ onMounted(() => {
 
 <RouterLink
   id="page-next"
-  :to="{ name: 'event-list-view', query: { page: page + 1 } }"
+  :to="{ name: 'event-list-view', query: { page: page + 1, pageSize: pageSize } }"
   rel="next"
   v-if="hasNextPage"
 >
-  Next Page
+  Next Page,
 </RouterLink>
 </template>
 <style scoped>
@@ -80,5 +86,8 @@ onMounted(() => {
 
 #page-next {
     text-align: right;
+}
+.page-size-selector {
+  margin-bottom: 20px;
 }
 </style>
