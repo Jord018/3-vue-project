@@ -16,15 +16,20 @@ onMounted(() => {
   .then((res) => {
     event.value = res.data
   })
-  .catch(() => {
+  .catch((error) => {
+    if (error.response.status === 404 && error.response){
     router.push ({
       name: '404-resource-view',
       params: {
         resource: 'event'
       }
     })
-  })
-})
+  } else {
+    router.push({
+      name: 'network-error-view'
+    })
+  }}
+)})
 </script>
 <template>
   <div v-if="event">
