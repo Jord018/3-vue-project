@@ -6,6 +6,8 @@ import EventDetailView from '@/views/event/DetailView.vue'
 import EventRegisterView from '@/views/event/RegisterView.vue'
 import EventEditView from '@/views/event/EditView.vue'
 import EventLayoutView from '@/views/event/LayoutView.vue'
+import NotFoundView from '@/views/NotFoundView.vue'
+
 
 
 
@@ -28,6 +30,17 @@ const router = createRouter({
       path: '/student',
       name: 'student',
       component: StudentView,
+    },
+    {
+      path: '/:cathAll(.*)*',
+      name: 'not-found',
+      component: NotFoundView,
+    },
+    {
+      path: '/404/:resource',
+      name: '404-resource-view',
+      component: NotFoundView,
+      props: true,
     },
     {
       path: '/event/:id',
