@@ -17,7 +17,7 @@ onMounted(() => {
     event.value = res.data
   })
   .catch((error) => {
-    if (error.response.status === 404 && error.response){
+    if (error.response && error.response.status === 404){
     router.push ({
       name: '404-resource-view',
       params: {
