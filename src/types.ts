@@ -9,3 +9,6 @@ export interface Event {
   petsAllowed: boolean
   organizer: string
 }
+export interface MessageState {
+  message: String
+}
