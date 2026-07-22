@@ -5,7 +5,6 @@ import type { Event } from '@/types'
 import { ref, onMounted, computed, watchEffect } from 'vue'
 import EventService from '@/services/EventService'
 import { useRoute } from 'vue-router'
-import nProgress from 'nprogress'
 const route = useRoute()
 const pageSize = computed(() => parseInt(route.query.pageSize as string) || 2)
 const events = ref<Event[] | null>(null)
@@ -23,7 +22,6 @@ const props = defineProps({
 const page = computed (() => props.page)
 onMounted(() => {
   watchEffect(() => {
-  nProgress.start()
   EventService.getEvents(pageSize.value, page.value)
     .then((response) => {
       events.value = response.data
@@ -31,9 +29,6 @@ onMounted(() => {
     })
     .catch((error) => {
       console.error('There was an error!', error)
-    })
-    .finally(() => {
-      nProgress.done()
     })
   })
 })
