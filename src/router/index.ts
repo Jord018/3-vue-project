@@ -51,6 +51,7 @@ const router = createRouter({
       name: 'network-error-view',
       component: NetworkErrorView
     },
+    
     {
       path: '/event/:id',
       name: 'event-layout-view',
@@ -93,6 +94,9 @@ const router = createRouter({
         ]
     }
   ],
+  scrollBehavior() {
+      return { top: 0 }
+    }
 })
 router.beforeEach(() => {
   nProgress.start()
