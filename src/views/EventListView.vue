@@ -10,7 +10,7 @@ const pageSize = computed(() => parseInt(route.query.pageSize as string) || 2)
 const events = ref<Event[] | null>(null)
 const totalEvents = ref(0)
 const hasNextPage = computed(() => {
-  const totalPages = Math.ceil(totalEvents.value / pageSize.value)
+  const totalPages = Math.ceil(totalEvents.value / 3)
   return page.value < totalPages
 })
 const props = defineProps({
@@ -22,7 +22,7 @@ const props = defineProps({
 const page = computed (() => props.page)
 onMounted(() => {
   watchEffect(() => {
-  EventService.getEvents(pageSize.value, page.value)
+  EventService.getEvents(3, page.value)
     .then((response) => {
       events.value = response.data
       totalEvents.value = response.headers['x-total-count']
@@ -35,16 +35,17 @@ onMounted(() => {
 </script>
 
 <template>
+  <div class="events">
   <h1>Events For Good</h1>
   <div class="page-size-selector">
     Items per page:
     <RouterLink :to="{ name: 'event-list-view', query: { page: 1, pageSize: 1 }}">1</RouterLink> |
     <RouterLink :to="{ name: 'event-list-view', query: { page: 1, pageSize: 2 }}">2</RouterLink>
   </div>
-  <div class="pagination">
+
     <EventCard v-for="event in events" :key="event.id" :event="event" />
     <category_organize v-for="event in events" :key="event.id" :event="event" />
-  </div>
+  <div class="pagination">
   <RouterLink
   id="page-prev"
   :to="{ name: 'event-list-view', query: { page: page - 1, pageSize: pageSize } }"
@@ -62,6 +63,8 @@ onMounted(() => {
 >
   Next Page,
 </RouterLink>
+    </div>
+  </div>
 </template>
 <style scoped>
 .events {
