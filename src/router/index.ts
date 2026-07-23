@@ -11,6 +11,7 @@ import NetworkErrorView from '@/views/NetworkErrorView.vue'
 import nProgress from 'nprogress'
 import EventService from '@/services/EventService'
 import { useEventStore} from '@/stores/event'
+import { useScrollStore } from '@/stores/scroll'
 
 
 
@@ -51,7 +52,7 @@ const router = createRouter({
       name: 'network-error-view',
       component: NetworkErrorView
     },
-    
+
     {
       path: '/event/:id',
       name: 'event-layout-view',
@@ -94,12 +95,25 @@ const router = createRouter({
         ]
     }
   ],
-  scrollBehavior() {
-      return { top: 0 }
+  scrollBehavior(to, from) {
+    const scrollStore = useScrollStore()
+    const toPage = Number(to.query.page)
+    const fromPage = Number(from.query.page)
+    const top = scrollStore.getPosition(to.fullPath)
+
+    if (toPage < fromPage && top !== null) {
+      scrollStore.removePosition(to.fullPath)
+      return { top }
     }
+    return { top: 0 }
+  }
 })
-router.beforeEach(() => {
+
+router.beforeEach((to, from) => {
   nProgress.start()
+  // Save scroll position of the current page before navigating away
+  const scrollStore = useScrollStore()
+  scrollStore.savePosition(from.fullPath)
 })
 router.afterEach(() => {
   nProgress.done()
